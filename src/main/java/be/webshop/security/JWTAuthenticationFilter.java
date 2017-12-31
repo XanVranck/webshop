@@ -1,6 +1,7 @@
 package be.webshop.security;
 
 import be.webshop.user.User;
+import be.webshop.utils.AuthProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,8 +24,6 @@ import java.util.Date;
 import java.util.Properties;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    private Properties properties = new Properties();
-    private InputStream inputStream;
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -49,7 +48,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
-        loadPropertiesForAuth();
+        Properties properties = AuthProperty.loadPropertiesForAuth();
+
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getUsername())
                 .setExpiration(new Date(System.currentTimeMillis() + properties.getProperty("expiration.time")))
@@ -58,8 +58,4 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader(properties.getProperty("header.string"), properties.getProperty("token.prefix") + token);
     }
 
-    private void loadPropertiesForAuth() throws IOException {
-        inputStream = new FileInputStream("authconfig.properties");
-        properties.load(inputStream);
-    }
 }

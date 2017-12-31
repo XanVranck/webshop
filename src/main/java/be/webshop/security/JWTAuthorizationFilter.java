@@ -1,6 +1,7 @@
 package be.webshop.security;
 
 import be.webshop.user.User;
+import be.webshop.utils.AuthProperty;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,9 +19,6 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
-    private Properties properties = new Properties();
-    private InputStream inputStream;
-
 
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -28,7 +26,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-        loadPropertiesForAuth();
+        Properties properties = AuthProperty.loadPropertiesForAuth();
         String header = request.getHeader(properties.getProperty("header.string"));
 
         if (header == null || !header.startsWith(properties.getProperty("token.prefix"))) {
@@ -40,7 +38,9 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         }
     }
 
-    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) {
+    private UsernamePasswordAuthenticationToken getAuthentication(HttpServletRequest request) throws IOException {
+        Properties properties = AuthProperty.loadPropertiesForAuth();
+
         String token = request.getHeader(properties.getProperty("header.string"));
 
         if (token != null) {
@@ -57,8 +57,5 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         return null;
     }
 
-    private void loadPropertiesForAuth() throws IOException {
-        inputStream = new FileInputStream("authconfig.properties");
-        properties.load(inputStream);
-    }
+
 }
