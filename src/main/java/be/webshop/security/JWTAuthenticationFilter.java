@@ -24,7 +24,7 @@ import java.util.Properties;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private Properties properties = new Properties();
-    InputStream inputStream;
+    private InputStream inputStream;
     private AuthenticationManager authenticationManager;
 
     public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
