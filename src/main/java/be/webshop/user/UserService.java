@@ -19,4 +19,7 @@ public class UserService {
     }
 
 
+    public void store(User user) {
+        repository.store(user);
+    }
 }

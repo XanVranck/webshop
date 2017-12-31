@@ -41,4 +41,12 @@ public class UserServiceTest {
                 .isInstanceOf(UserNietGevonden.class)
                 .hasMessage("User met username 'Xan' is niet gevonden");
     }
+
+    @Test
+    public void storeUser_verifyInteractionWithRepo() {
+        User user = new User("Nena", "nena");
+        userService.store(user);
+
+        verify(userRepositoryMock).store(user);
+    }
 }
