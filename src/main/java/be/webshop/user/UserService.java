@@ -11,7 +11,8 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User findUserBy(String username) {
         try {
