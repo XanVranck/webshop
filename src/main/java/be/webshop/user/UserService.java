@@ -11,9 +11,6 @@ public class UserService {
     @Autowired
     private UserRepository repository;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     public User findUserBy(String username) {
         try {
             return repository.findUserBy(username);
@@ -24,7 +21,6 @@ public class UserService {
 
 
     public void store(User user) {
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         repository.store(user);
     }
 }

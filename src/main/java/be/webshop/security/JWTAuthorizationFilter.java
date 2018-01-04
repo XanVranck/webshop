@@ -30,7 +30,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         Properties properties = AuthProperty.loadPropertiesForAuth();
         String header = request.getHeader(properties.getProperty("header.string"));
 
-        if (header == null || !header.startsWith(properties.getProperty("token.prefix"))) {
+        if (header == null || !header.startsWith("Basic")) {
             chain.doFilter(request, response);
             logger.info("unauthorized user tried to access: " + request.getServletPath());
         } else {

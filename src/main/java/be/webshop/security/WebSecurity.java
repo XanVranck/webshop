@@ -1,6 +1,8 @@
 package be.webshop.security;
 
+import be.webshop.user.UserService;
 import be.webshop.utils.AuthProperty;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +26,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private UserService userService;
+
     public WebSecurity(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
@@ -34,9 +39,10 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         Properties properties = AuthProperty.loadPropertiesForAuth();
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(POST, properties.getProperty("sign.up.url")).permitAll()
+                .antMatchers(POST, "/login").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthenticationFilter(authenticationManager(), userService))
                 .addFilter(new JWTAuthorizationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(STATELESS);
     }

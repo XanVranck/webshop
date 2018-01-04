@@ -1,8 +1,8 @@
 package be.webshop.security;
 
 import be.webshop.user.User;
+import be.webshop.user.UserService;
 import be.webshop.utils.AuthProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,25 +15,24 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
+    private UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        try {
-            User user = new ObjectMapper().readValue(request.getInputStream(), User.class);
+        String username = request.getHeader("username");
+        User user = userService.findUserBy(username);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -41,9 +40,6 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             user.getPassword(),
                             new ArrayList<>()
                     ));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

@@ -17,7 +17,7 @@ public class AuthPropertyTest {
         assertThat(properties.getProperty("secret")).isEqualTo("SecretKeyToGenJWTs");
         assertThat(properties.getProperty("expiration.time")).isEqualTo("864_000_000");
         assertThat(properties.getProperty("token.prefix")).isEqualTo("Bearer");
-        assertThat(properties.getProperty("header.string")).isEqualTo("authorization");
+        assertThat(properties.getProperty("header.string")).isEqualTo("Authorization");
         assertThat(properties.getProperty("sign.up.url")).isEqualTo("/user/sign-up");
         assertThat(properties.getProperty("token")).isEqualTo("rndm.gnrtd.tkn");
     }
