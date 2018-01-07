@@ -32,7 +32,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getHeader("username");
-        User user = userService.findUserBy(username);
+        String password = request.getHeader("password");
+        User user = new User(username, password);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -47,8 +48,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Properties properties = AuthProperty.loadPropertiesForAuth();
 
         String token = Jwts.builder()
-                .setSubject(((User) auth.getPrincipal()).getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + properties.getProperty("expiration.time")))
+                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
                 .signWith(SignatureAlgorithm.HS512, properties.getProperty("secret").getBytes())
                 .compact();
         response.addHeader(properties.getProperty("header.string"), properties.getProperty("token.prefix") + token);
