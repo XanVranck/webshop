@@ -26,9 +26,4 @@ public class UserController {
         User realUser = new User(username, bCryptPasswordEncoder.encode(password));
         userService.store(realUser);
     }
-
-    @PostMapping("/login")
-    public void login() {
-        System.out.println("loggin in");
-    }
 }
