@@ -25,10 +25,11 @@ public class UserControllerTest extends SpringIntegrationTest {
 
     @Test
     public void signUp_shouldStoreTheUser() {
-        userController.signUp(user);
+        userController.signUp(user.getUsername(), user.getPassword());
 
         User actual = userService.findUserBy("Nena");
 
-        assertThat(actual).isEqualTo(user);
+        assertThat(actual.getUsername()).isEqualTo("Nena");
+        assertThat(actual.getPassword()).isEqualTo("$2a$10$F5liRaB4B3quhxW1FX8VruzGkU14bTKleacLOh9AkmoTfmorDhIqG");
     }
 }
