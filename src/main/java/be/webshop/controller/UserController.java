@@ -4,10 +4,7 @@ import be.webshop.user.User;
 import be.webshop.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 
@@ -25,5 +22,9 @@ public class UserController {
                        @RequestParam String password) {
         User realUser = new User(username, bCryptPasswordEncoder.encode(password));
         userService.store(realUser);
+    }
+
+    @PostMapping("/login")
+    public void login() {
     }
 }

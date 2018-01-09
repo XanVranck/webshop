@@ -22,11 +22,9 @@ import java.util.Properties;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
-    private UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
     }
 
     @Override
@@ -44,14 +42,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException, ServletException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException {
         Properties properties = AuthProperty.loadPropertiesForAuth();
 
         String token = Jwts.builder()
                 .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
                 .signWith(SignatureAlgorithm.HS512, properties.getProperty("secret").getBytes())
                 .compact();
-        response.addHeader(properties.getProperty("header.string"), properties.getProperty("token.prefix") + token);
+        response.addHeader("access-control-expose-headers", properties.getProperty("header.string"));
+        response.addHeader(properties.getProperty("header.string"), properties.getProperty("token.prefix") + " " + token);
     }
 
 }
