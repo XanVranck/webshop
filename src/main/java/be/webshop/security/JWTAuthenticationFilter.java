@@ -1,7 +1,6 @@
 package be.webshop.security;
 
 import be.webshop.user.User;
-import be.webshop.user.UserService;
 import be.webshop.utils.AuthProperty;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -12,18 +11,19 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Properties;
 
+import static java.util.Collections.singletonList;
+
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    Properties properties = AuthProperty.loadPropertiesForAuth();
+
     private AuthenticationManager authenticationManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) throws IOException {
         this.authenticationManager = authenticationManager;
     }
 
@@ -33,23 +33,25 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String password = request.getHeader("password");
         User user = new User(username, password);
 
-            return authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            user.getUsername(),
-                            user.getPassword(),
-                            new ArrayList<>()
-                    ));
+        Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        user.getUsername(),
+                        user.getPassword(),
+                        singletonList(user.getRole())));
+        if (authenticate != null) {
+            response.addHeader(properties.getProperty("role"), user.getRole().getAuthority());
+        }
+
+        return authenticate;
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException {
-        Properties properties = AuthProperty.loadPropertiesForAuth();
-
         String token = Jwts.builder()
-                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
+                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername() + ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getPassword() + ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getAuthorities())
                 .signWith(SignatureAlgorithm.HS512, properties.getProperty("secret").getBytes())
                 .compact();
-        response.addHeader("access-control-expose-headers", properties.getProperty("header.string"));
+        response.addHeader("access-control-expose-headers", properties.getProperty("header.string") + ", " + properties.getProperty("role"));
         response.addHeader(properties.getProperty("header.string"), properties.getProperty("token.prefix") + " " + token);
     }
 
