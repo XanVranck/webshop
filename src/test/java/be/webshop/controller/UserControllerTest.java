@@ -1,11 +1,13 @@
 package be.webshop.controller;
 
+import be.webshop.api.UserTo;
 import be.webshop.infrastructure.SpringIntegrationTest;
 import be.webshop.user.User;
 import be.webshop.user.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -16,20 +18,23 @@ public class UserControllerTest extends SpringIntegrationTest {
     @Autowired
     private UserService userService;
 
-    private User user;
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+
+    private UserTo user;
 
     @Before
     public void setUp() {
-        user = new User("Nena", "Nena");
+        user = new UserTo("Nena", "Nena", "nenacall@hotmail.com");
     }
 
     @Test
     public void signUp_shouldStoreTheUser() {
-        userController.signUp(user.getUsername(), user.getPassword());
+        String encode = bCryptPasswordEncoder.encode(user.getPassword());
+        userController.signUp(user);
 
         User actual = userService.findUserBy("Nena");
 
         assertThat(actual.getUsername()).isEqualTo("Nena");
-        assertThat(actual.getPassword()).isEqualTo("$2a$10$F5liRaB4B3quhxW1FX8VruzGkU14bTKleacLOh9AkmoTfmorDhIqG");
+        assertThat(actual.getEmail()).isEqualTo("nenacall@hotmail.com");
     }
 }

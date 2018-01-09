@@ -1,6 +1,9 @@
 package be.webshop.controller;
 
+import be.webshop.api.UserTo;
+import be.webshop.exception.UsernameBestaatAl;
 import be.webshop.user.User;
+import be.webshop.user.UserFactory;
 import be.webshop.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,9 +21,9 @@ public class UserController {
 
     @PostMapping("/sign-up")
     @RequestMapping(produces = "application/json")
-    public void signUp(@RequestParam String username,
-                       @RequestParam String password) {
-        User realUser = new User(username, bCryptPasswordEncoder.encode(password));
+    public void signUp(@RequestBody UserTo user) throws UsernameBestaatAl {
+        User realUser = UserFactory.assembleUser(user);
+        realUser.setPassword(bCryptPasswordEncoder.encode(realUser.getPassword()));
         userService.store(realUser);
     }
 

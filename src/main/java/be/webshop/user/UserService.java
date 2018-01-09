@@ -1,6 +1,7 @@
 package be.webshop.user;
 
 import be.webshop.exception.UserNietGevonden;
+import be.webshop.exception.UsernameBestaatAl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,7 +21,7 @@ public class UserService {
     }
 
 
-    public void store(User user) {
+    public void store(User user) throws UsernameBestaatAl {
         repository.store(user);
     }
 }

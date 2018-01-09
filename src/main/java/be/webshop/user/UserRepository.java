@@ -1,9 +1,11 @@
 package be.webshop.user;
 
+import be.webshop.exception.UsernameBestaatAl;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 
 @Repository
 public class UserRepository {
@@ -17,7 +19,11 @@ public class UserRepository {
                 .getSingleResult();
     }
 
-    void store(User user){
-        entityManager.persist(user);
+    void store(User user) throws UsernameBestaatAl {
+        try {
+            entityManager.persist(user);
+        } catch (PersistenceException e) {
+            throw new UsernameBestaatAl(user.getUsername());
+        }
     }
 }

@@ -1,9 +1,6 @@
 package be.webshop.user;
 
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import java.util.Objects;
 
@@ -16,8 +13,10 @@ public class User {
     @GeneratedValue(strategy = IDENTITY)
     private long id;
 
+    @Column(unique = true)
     private String username;
     private String password;
+    private String email;
 
     @Enumerated
     private Role role;
@@ -28,6 +27,13 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+        role = CUSTOMER;
+    }
+
+    public User(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
         role = CUSTOMER;
     }
 
@@ -44,6 +50,17 @@ public class User {
     }
 
     @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -51,22 +68,21 @@ public class User {
         return id == user.id &&
                 Objects.equals(username, user.username) &&
                 Objects.equals(password, user.password) &&
+                Objects.equals(email, user.email) &&
                 role == user.role;
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, username, password, role);
+        return Objects.hash(id, username, password, email, role);
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role=" + role +
-                '}';
+    public String getEmail() {
+        return email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
