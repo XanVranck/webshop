@@ -5,6 +5,6 @@ import be.webshop.api.UserTo;
 public class UserFactory {
 
     public static User assembleUser(UserTo userTo) {
-        return new User(userTo.getUsername(), userTo.getPassword(), userTo.getEmail());
+        return new User(userTo.getUsername(), userTo.getPassword());
     }
 }

@@ -18,23 +18,19 @@ public class UserControllerTest extends SpringIntegrationTest {
     @Autowired
     private UserService userService;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
     private UserTo user;
 
     @Before
     public void setUp() {
-        user = new UserTo("Nena", "Nena", "nenacall@hotmail.com");
+        user = new UserTo("Nena", "Nena");
     }
 
     @Test
     public void signUp_shouldStoreTheUser() {
-        String encode = bCryptPasswordEncoder.encode(user.getPassword());
         userController.signUp(user);
 
         User actual = userService.findUserBy("Nena");
 
         assertThat(actual.getUsername()).isEqualTo("Nena");
-        assertThat(actual.getEmail()).isEqualTo("nenacall@hotmail.com");
     }
 }

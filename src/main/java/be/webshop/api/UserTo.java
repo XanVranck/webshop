@@ -3,15 +3,13 @@ package be.webshop.api;
 public class UserTo {
     private String username;
     private String password;
-    private String email;
 
     UserTo() {
     }
 
-    public UserTo(String username, String password, String email) {
+    public UserTo(String username, String password) {
         this.username = username;
         this.password = password;
-        this.email = email;
     }
 
     public String getUsername() {
@@ -20,9 +18,5 @@ public class UserTo {
 
     public String getPassword() {
         return password;
-    }
-
-    public String getEmail() {
-        return email;
     }
 }
