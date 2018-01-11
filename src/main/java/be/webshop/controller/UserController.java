@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 
+import static be.webshop.user.Role.CUSTOMER;
+
 @RestController
 @Transactional
 public class UserController {
@@ -24,6 +26,7 @@ public class UserController {
     public void signUp(@RequestBody UserTo user) throws UsernameBestaatAl {
         User realUser = UserFactory.assembleUser(user);
         realUser.setPassword(bCryptPasswordEncoder.encode(realUser.getPassword()));
+        realUser.setRole(CUSTOMER);
         userService.store(realUser);
     }
 

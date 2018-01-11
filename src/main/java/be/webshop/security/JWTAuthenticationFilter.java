@@ -1,6 +1,7 @@
 package be.webshop.security;
 
 import be.webshop.user.User;
+import be.webshop.user.UserService;
 import be.webshop.utils.AuthProperty;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,10 +17,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
 
-import static java.util.Collections.singletonList;
+import static java.util.Collections.emptyList;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-    Properties properties = AuthProperty.loadPropertiesForAuth();
+    private Properties properties = AuthProperty.loadPropertiesForAuth();
 
     private AuthenticationManager authenticationManager;
 
@@ -37,16 +38,16 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
                         user.getPassword(),
-                        singletonList(user.getRole())));
+                        emptyList()));
         if (authenticate != null) {
-            response.addHeader(properties.getProperty("role"), user.getRole().getAuthority());
+            response.addHeader(properties.getProperty("role"), String.valueOf(authenticate.getAuthorities().stream().findFirst().get()));
         }
 
         return authenticate;
     }
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) throws IOException {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication auth) {
         String token = Jwts.builder()
                 .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername() + ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getPassword() + ((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getAuthorities())
                 .signWith(SignatureAlgorithm.HS512, properties.getProperty("secret").getBytes())

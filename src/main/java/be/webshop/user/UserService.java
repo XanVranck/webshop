@@ -4,7 +4,6 @@ import be.webshop.exception.UserNietGevonden;
 import be.webshop.exception.UsernameBestaatAl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,7 +18,6 @@ public class UserService {
             throw new UserNietGevonden(username);
         }
     }
-
 
     public void store(User user) throws UsernameBestaatAl {
         repository.store(user);
