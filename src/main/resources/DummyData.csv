@@ -1,0 +1,5 @@
+id,password,role,username
+1,$2a$10$LK4Ke6Z6VbxtCqmtSuVAGuI4iGHdwf092uCkziz65lZt7sGutmGHi,ADMIN,Xan
+2,$2a$10$IhLr4yEO35ok8dBR/QICiOZw6xCH5fLvsxSWb/ecQb3PZqQ6IxQLK,ADMIN,Nena
+3,$2a$10$teruc5x6iSRCwYQTCGVniO27e665ZovckKwxc5EMvuNlu4utaCLd6,CUSTOMER,Hedwig
+4,$2a$10$eqyEZZr0hBpBELbcL56NwOgMxk5ia/PBwSFbN0trucE9PUs3H063W,CUSTOMER,Lut
