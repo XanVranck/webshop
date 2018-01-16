@@ -35,8 +35,12 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         Properties properties = AuthProperty.loadPropertiesForAuth();
-        http.cors().and().csrf().disable().authorizeRequests()
+        http.cors().and().csrf().disable()
+                .logout().logoutUrl("logout").clearAuthentication(true).deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and().authorizeRequests()
                 .antMatchers(POST, properties.getProperty("sign.up.url")).permitAll()
+                .antMatchers(POST, "/logout").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilter(new JWTAuthenticationFilter(authenticationManager()))
@@ -56,4 +60,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
         return source;
     }
+
+
 }

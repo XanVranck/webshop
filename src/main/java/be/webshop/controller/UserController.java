@@ -32,5 +32,11 @@ public class UserController {
 
     @PostMapping("/login")
     public void login() {
+        System.out.println("loggin in");
+    }
+
+    @PostMapping("/logout")
+    public void logout() {
+        System.out.println("loggin out");
     }
 }
