@@ -10,21 +10,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Transactional
-@RequestMapping(name = "/image")
+@RequestMapping("/image")
 public class ImageController {
     @Autowired
     private ImageService imageService;
 
-    @GetMapping
-    public List<String> findAllThumbnails(){
-        return imageService.findAllThumbnails();
+    @GetMapping("/getThumbnails")
+    public Map<String, List<String>> findAllThumbnails(){
+        List<String> allThumbnails = imageService.findAllThumbnails();
+        Map<String, List<String>> thumbnails = new HashMap<>();
+        thumbnails.put("thumbnails", allThumbnails);
+        return thumbnails;
     }
 
-    @PostMapping
+    @PostMapping("/postThumbnails")
     public void storeThumbnail(String filePath){
         Image image = new Image(filePath, ImageType.THUMBNAIL);
         imageService.storeThumbnail(image);

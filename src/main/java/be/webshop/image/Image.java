@@ -15,6 +15,8 @@ public class Image {
     @Enumerated(EnumType.STRING)
     private ImageType imageType;
 
+    protected  Image(){}
+
     public Image(String filePath, ImageType imageType) {
         this.filePath = filePath;
         this.imageType = imageType;

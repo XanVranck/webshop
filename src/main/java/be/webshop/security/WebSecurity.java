@@ -40,6 +40,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .and().authorizeRequests()
                 .antMatchers(POST, properties.getProperty("sign.up.url")).permitAll()
+                .antMatchers(GET, "/image").permitAll()
                 .antMatchers(POST, "/logout").permitAll()
                 .anyRequest().authenticated()
                 .and()
